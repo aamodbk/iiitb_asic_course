@@ -1,5 +1,6 @@
-# ASIC COURSE SPECIFICATIONS
-## Installation of required tools
+# ASIC COURSE UPDATES
+## Day 0
+### Installation of required tools
 The required tools IcarusVerilog, GTKWave and YoSys tools can be installed with the following command.
 ```
 sudo apt-get install iverilog gtkwave yosys
