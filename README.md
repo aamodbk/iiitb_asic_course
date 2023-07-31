@@ -3,7 +3,7 @@
 ### Installation of required tools
 The required tools IcarusVerilog, GTKWave tools can be installed with the following command.
 ```
-sudo apt-get install iverilog gtkwave yosys
+sudo apt-get install iverilog gtkwave
 ```
 ![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/img1.png)
 ![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/img2.png)
