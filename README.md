@@ -32,7 +32,86 @@ make config-gcc
 make 
 sudo make install
 ```
-![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/img4.png)
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/yosys.png)
+
+### About NGSpice
+Ngspice is an open-source electronic circuit simulator that allows to analyze and simulate analog, digital, and mixed-signal circuits. Its code is based on three open source software packages: Spice3f5, Cider1b1 and Xspice. It is the open source successor of these venerable packages. It provides a powerful command-line interface for running simulations and can be used to model and test complex electronic designs, helping users understand circuit behavior, optimize performance, and ensure design reliability. With its wide range of supported circuit elements and models, Ngspice is a valuable tool in electronics design and education, aiding in the development and testing of electronic systems.
+
+To install NGSpice follow the below steps.
+
+First go to the following Sourceforge link -- [NGSpice - SourceForge](https://sourceforge.net/projects/ngspice/) and unzip the package into your device.
+Next type the below commands into your terminal while in the `ngspice-40` directory.
+```
+sudo apt-get install libxaw7-dev build-essential
+sudo ./compile_linux.sh
+```
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/ngspice.png)
+
+### About OPENSTA
+OpenSTA is an open-source static timing analysis tool used in digital integrated circuit design. It helps engineers analyze the timing of digital circuits to ensure that signals propagate correctly and meet required timing constraints. By considering factors such as signal delays and logic paths, OpenSTA assists in identifying potential timing violations and aids in optimizing circuit performance. It plays a crucial role in verifying the timing correctness of complex digital designs before fabrication, contributing to the overall reliability and functionality of integrated circuits.
+
+To install OpenSTA, type the following into your terminal.
+```
+sudo apt-get install cmake clang gcc tcl swig bison flex
+git clone https://github.com/The-OpenROAD-Project/OpenSTA.git
+cd OpenSTA
+mkdir build
+cd build
+cmake ..
+make
+```
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/opensta.png)
+
+### About Magic
+Magic is an electronic design automation (EDA) layout tool for very-large-scale integration (VLSI) integrated circuit (IC) originally written by John Ousterhout and his graduate students at UC Berkeley. Due largely in part to its liberal Berkeley open-source license, magic has remained popular with universities and small companies. The open-source license has allowed VLSI engineers with a bent toward programming to implement clever ideas and help magic stay abreast of fabrication technology. However, it is the well thought-out core algorithms which lend to magic the greatest part of its popularity. Magic is widely cited as being the easiest tool to use for circuit layout, even for people who ultimately rely on commercial tools for their product design flow.
+
+For installation of magic, type the following commands in your terminal to install dependencies:
+```
+sudo apt-get install m4
+sudo apt-get install csh
+sudo apt-get install tcsh
+sudo apt-get install libx11-dev
+sudo apt-get install tcl-dev tk-dev
+sudo apt-get install libcairo2-dev
+sudo apt-get install mesa-common-dev libglu1-mesa-dev
+sudo apt-get install libncurses-dev
+```
+
+To install Magic, type the following in the terminal:
+```
+$   git clone https://github.com/RTimothyEdwards/magic
+$   cd magic
+$   ./configure
+$   sudo make
+$   sudo make install
+```
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/magic.png)
+
+### About OpenLane
+OpenLane is an open-source VLSI flow built around open-source tools. That is, it's a collection of scripts that run these tools, in the right order, transforming their inputs and outputs as appropriate, and organising the results. It is an automated RTL to GDSII flow based on several components including OpenROAD, Yosys, Magic, Netgen, CVC, SPEF-Extractor, CU-GR, Klayout and a number of custom scripts for design exploration and optimization. The flow performs full ASIC implementation steps from RTL all the way down to GDSII.
+For installation of OpenLane, type the follow the below steps.
+
+Installing python as it is a pre-requisite:
+```
+$   sudo apt install -y build-essential python3 python3-venv python3-pip
+```
+For installing Docker Engine on Ubuntu, use the following link -- https://docs.docker.com/engine/install/ubuntu/.
+
+Next, go to your main directory and type the following in the terminal:
+
+```
+$   git clone https://github.com/The-OpenROAD-Project/OpenLane.git
+$   cd OpenLane
+$   sudo make
+```
+
+Now, to check that OpenLane dependencies are succesfully installed, run the test command:
+
+```
+$   sudo make test
+```
+If the line `Basic test passed` is printed in the terminal, then the installation is successful.
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/openlane.png)
 
 ## Contributors
 * Aamod B K
@@ -52,3 +131,5 @@ sudo make install
 * Yosys Documentation -- https://yosyshq.net/yosys/
 * Magic -- http://www.opencircuitdesign.com/magic/; https://en.wikipedia.org/wiki/Magic_(software)#:~:text=Magic%20is%20an%20electronic%20design,the%20project%20in%20February%201983.
 * OpenLane -- https://github.com/The-OpenROAD-Project/OpenLane
+* NGspice -- https://ngspice.sourceforge.io/presentation.html
+* OpenSTA -- https://github.com/The-OpenROAD-Project/OpenSTA
