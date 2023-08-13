@@ -127,7 +127,6 @@ If the line `Basic test passed` is printed in the terminal, then the installatio
 ## References
 * Wikipedia -- https://en.wikipedia.org/wiki/Logic_synthesis
 * IcarusVerilog Wikipedia -- https://en.wikipedia.org/wiki/Icarus_Verilog
-* 
 * Yosys Documentation -- https://yosyshq.net/yosys/
 * Magic -- http://www.opencircuitdesign.com/magic/; https://en.wikipedia.org/wiki/Magic_(software)#:~:text=Magic%20is%20an%20electronic%20design,the%20project%20in%20February%201983.
 * OpenLane -- https://github.com/The-OpenROAD-Project/OpenLane
