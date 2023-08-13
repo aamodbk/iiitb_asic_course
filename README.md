@@ -111,12 +111,15 @@ Now, to check that OpenLane dependencies are succesfully installed, run the test
 $   sudo make test
 ```
 If the line `Basic test passed` is printed in the terminal, then the installation is successful.
+
 ![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/openlane.png)
 
 ## Day 1
 ### Verilog RTL Design
 Verilog RTL (Register Transfer Level) design is a methodology for describing digital circuits at a higher abstraction level, focusing on how data flows and is manipulated within registers and logic elements. It's a key step in digital design before actual implementation. Icarus Verilog is an open-source Verilog compiler and simulator that helps translate RTL descriptions into simulations. It compiles Verilog code and simulates its behavior, enabling designers to test and verify their digital circuits' functionality.
+
 ![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/iverilog_gtkwave.png)
+
 Once Verilog RTL code is written and simulated using Icarus Verilog, designers can use GTKWave, an open-source waveform viewer, to visualize the simulation results. GTKWave allows users to load and inspect waveforms generated during the simulation, helping them understand signal interactions, timing relationships, and overall circuit behavior. This combined workflow of Verilog RTL design, synthesis using Icarus Verilog, and waveform analysis using GTKWave is crucial for designing, testing, and validating digital circuits before moving on to the synthesis of the RTL design into gate level using the Yosys tool.
 
 Given below are the steps to follow to perform an initial RTL design and synthesis as explained above.
@@ -133,9 +136,11 @@ iverilog good_mux.v tb_good_mux.v
 gtkwave tb_good_mux.vcd
 ```
 The first two lines compile and execute the design and testbench files for the example good MUX and the last line opens GTKWave to visualize the results of the testbench simulation.
+
 ![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/sim_result.png)
 
 ### Synthesis of RTL Design into Gate level netlist
+After designing and simulating a digital circuit using Verilog RTL and tools like Icarus Verilog and GTKWave, the next step is synthesis into a gate-level netlist using Yosys. This gate-level netlist serves as an intermediary step between the RTL description and the actual hardware implementation. Yosys optimizes the design, mapping it to specific target technology libraries or FPGA architectures, and generates an optimized netlist that can be further analyzed and prepared for physical layout and fabrication.
 
 ## Contributors
 * Aamod B K
