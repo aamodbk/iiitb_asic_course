@@ -243,6 +243,64 @@ The following netlist is displayed.
 ![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/dot_mm_sub.png)
 
 ### Flip-Flop Coding Styles and Optimizations
+Flip-Flops are an essential part of sequential logic in a circuit and here we explore the design and synthesis of various types of flip-flops.
+The steps to compile, view waveform and also synthesise the different types of flip-flops are given below.
+
+**Asynchronous-Reset FF**
+```
+iverilog dff_asyncres.v tb_dff_asyncres.v
+./a.out
+gtkwave tb_dff_asyncres.vcd
+```
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/asyncres.png)
+```
+yosys
+yosys> read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+yosys> read_verilog dff_asyncres.v
+yosys> synth -top dff_asyncres
+yosys> dfflibmap -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+yosys> abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+yosys> show
+```
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/dot_asyncres.png)
+
+**Synchronous-Reset FF**
+```
+iverilog dff_syncres.v tb_dff_syncres.v
+./a.out
+gtkwave tb_dff_syncres.vcd
+```
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/syncres.png)
+```
+yosys
+yosys> read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+yosys> read_verilog dff_syncres.v
+yosys> synth -top dff_syncres
+yosys> dfflibmap -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+yosys> abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+yosys> show
+```
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/dot_syncres.png)
+
+**Asynchronous-Set FF**
+```
+iverilog dff_async_set.v tb_dff_async_set.v
+./a.out
+gtkwave tb_dff_async_set.vcd
+```
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/async_set.png)
+```
+yosys
+yosys> read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+yosys> read_verilog dff_async_set.v
+yosys> synth -top dff_async_set
+yosys> dfflibmap -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+yosys> abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+yosys> show
+```
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/dot_async_set.png)
+
+**Optimisations**
 
 
 ## Contributors
