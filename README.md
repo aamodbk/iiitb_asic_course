@@ -144,7 +144,7 @@ After designing and simulating a digital circuit using Verilog RTL and tools lik
 
 ![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/yosys_synth.png)
 
-After following the steps to synthesis and obtaining the netlist, we can verify our netlist by perfoming Gate Level Simulation (GLS). Netlist is translation from RTL into Gates and connection wirings with full functional and timing behaviour. To obtain netlist using synthesis, we need a library of standard cells in the form of `.lib` files. The inclusion of these files along with the netlist synthesis is done using the following steps.
+After following the steps to synthesis and obtaining the netlist, we can verify our netlist by perfoming Gate Level Simulation (GLS). Netlist is translation from RTL into Gates and connection wirings with full functional and timing behaviour. To obtain netlist using synthesis, we need a library of all available standard cells in the form of `.lib` files. The inclusion of these files along with the netlist synthesis is done using the following steps.
 Type the given commands into the terminal while in the directory `sky130RTLDesignAndSynthesisWorkshop/verilog_files/`.
 ```
 yosys
@@ -170,6 +170,79 @@ gtkwave tb_good_mux.vcd
 ![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/gls.png)
 
 ## Day 2
+### Contents of the library (.lib) file
+The below image shows the top contents of the file `sky130_fd_sc_hd__tt_025C_1v80.lib`.
+
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/lib.png)
+
+The beginning of the code mainly shows the standard parameters for the synthesis like the technlogy used (CMOS in this case), the delay model, units of various physical quantities etc.
+Also as explained above it contains a variety of different standard cells along with their features.
+Taking an example of a 2-input AND into the first input of a 4-input NOR gate (`!( ( A1 & A2 ) | B1 | C1 | D1 )`),
+we see that there are several versions of the same standard cell.
+
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/ver.png)
+
+### Hierarchical Synthesis and Flat Synthesis
+Hierarchical synthesis involves synthesizing a complex design by breaking it down into various sub-modules, where each module is synthesized separately to generate gate-level netlists and then integrated. Hierarchical synthesis allows for better organization, reuse of modules, and incremental changes to the design without affecting the entire system.
+Flat synthesis, on the other hand, treats the entire design as a single, monolithic unit during the synthesis process and regardless of any hierarchical relations, it is synthesized into a single netlist. Flat synthesis can be useful for optimizing certaijn designs but it becomes challenging to maintain, analyze, and modify the design due to its lack of structural modularity.
+
+We see an example of hierarchical and flat synthesis in the `multiple_modules.v` file in the `sky130RTLDesignAndSynthesisWorkshop/verilog_files/` directory.
+
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/mm.png)
+
+To perform hierarchical synthesis on the `multiple_modules.v` file type the following commands.
+```
+yosys
+yosys> read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+yosys> read_verilog multiple_modules.v
+yosys> synth -top multiple_modules
+yosys> abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+yosys> show multiple_modules
+yosys> write_verilog multiple_modules_hier.v
+```
+The following statistics are displayed.
+
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/stat_mm_h.png)
+
+The following netlist is displayed.
+
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/dot_mm_h.png)
+
+To perform flat synthesis on the `multiple_modules.v` file type the following commands.
+```
+yosys
+yosys> read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+yosys> read_verilog multiple_modules.v
+yosys> synth -top multiple_modules
+yosys> abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+yosys> flatten
+yosys> show
+yosys> write_verilog multiple_modules_flat.v
+```
+
+The following netlist is displayed.
+
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/dot_mm_f.png)
+
+To synthesise each sub-module separately type in the following commands.
+```
+yosys
+yosys> read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+yosys> read_verilog multiple_modules.v
+yosys> synth -top sub_module1
+yosys> abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+yosys> show
+yosys> write_verilog multiple_modules_flat.v
+```
+The following statistics are displayed.
+
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/stat_mm_sub.png)
+
+The following netlist is displayed.
+
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/dot_mm_sub.png)
+
+### Flip-Flop Coding Styles and Optimizations
 
 
 ## Contributors
