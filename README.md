@@ -142,6 +142,36 @@ The first two lines compile and execute the design and testbench files for the e
 ### Synthesis of RTL Design into Gate level netlist
 After designing and simulating a digital circuit using Verilog RTL and tools like Icarus Verilog and GTKWave, the next step is synthesis into a gate-level netlist using Yosys. This gate-level netlist serves as an intermediary step between the RTL description and the actual hardware implementation. Yosys optimizes the design, mapping it to specific target technology libraries or FPGA architectures, and generates an optimized netlist that can be further analyzed and prepared for physical layout and fabrication.
 
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/yosys_synth.png)
+
+After following the steps to synthesis and obtaining the netlist, we can verify our netlist by perfoming Gate Level Simulation (GLS). Netlist is translation from RTL into Gates and connection wirings with full functional and timing behaviour. To obtain netlist using synthesis, we need a library of standard cells in the form of `.lib` files. The inclusion of these files along with the netlist synthesis is done using the following steps.
+Type the given commands into the terminal while in the directory `sky130RTLDesignAndSynthesisWorkshop/verilog_files/`.
+```
+yosys
+yosys> read_liberty -lib ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+yosys> read_verilog good_mux.v
+yosys> abc -liberty ../lib/sky130_fd_sc_hd__tt_025C_1v80.lib
+yosys> show
+yosys> write_verilog -noattr good_mux_netlist.v
+```
+The `read_verilog` command displays the statistics of the netlist and the `show` command displays the netlist in a `.dot` file format.
+
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/stat_synth.png)
+
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/dot_synth.png)
+
+The `write_verilog` command writes the current design into a netlist file. We can then perform verification of GLS by running the following command.
+
+```
+iverilog -DFUNCTIONAL -DUNIT_DELAY=#1 ../my_lib/verilog_model/primitives.v ../my_lib/verilog_model/sky130_fd_sc_hd.v good_mux_netlist.v tb_good_mux.v
+./a.out
+gtkwave tb_good_mux.vcd
+```
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/gls.png)
+
+## Day 2
+
+
 ## Contributors
 * Aamod B K
 * Kunal Ghosh
