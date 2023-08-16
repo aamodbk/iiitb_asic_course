@@ -301,6 +301,287 @@ yosys> show
 ![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/dot_async_set.png)
 
 **Optimisations**
+Taking the example of multiplication of a binary number by 2, `mult_2.v`, since it requires on left-shifting of the bits and appending the LSB bits with 0s, it does not require the use of any standard cells and is thus very optimal.
+The netlist obtained for this code is:
+```
+
+```
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/mult_2.png)
+
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/dot_mult_2.png)
+
+Similarly as a multiplication by 8 requires left-shifting the bits by 3 bits, the netlist obtained for the code is:
+```
+
+```
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/mult_8.png)
+
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/dot_mult_8.png)
+
+## Day 3
+### Combinational Optimisations
+**Contant Propagation**
+Due to the fixed nature of some inputs, transistor logic can sometimes be optimised to use a much lower number of transistors than actually required.
+Eg:
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/con_prop.png)
+
+**Boolean Logic Optimisation**
+The boolean expression of combinatorial logic can also sometimes be simplified into much smaller forms as seen in the example below:
+Eg: The logic `assign y = a?(b?c:(c?a:0)):(!c);` can be simplified into the logic `assign y = a ^ c`.
+
+**Examples**
+Reducible boolean logic in the netlist can be optimised during synthesis using the `opt_clean` command in yosys.
+
+For example,
+```
+module opt_check (input a , input b , output y);
+	assign y = a?b:0;
+endmodule
+```
+The above logic upon synthesis is infered as an AND gate on optimisation.
+
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/opt1.png)
+
+```
+module opt_check2 (input a , input b , output y);
+	assign y = a?1:b;
+endmodule
+```
+The above logic upon synthesis is infered as an OR gate with a NAND implementation on optimisation.
+
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/opt2.png)
+
+```
+module opt_check3 (input a , input b, input c , output y);
+	assign y = a?(c?b:0):0;
+endmodule
+```
+The above logic upon synthesis is infered as a 3 input AND gate on optimisation.
+
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/opt3.png)
+
+```
+module opt_check4 (input a , input b , input c , output y);
+ assign y = a?(b?(a & c ):c):(!c);
+ endmodule
+```
+The above logic upon synthesis is infered as a 2 input XNOR gate on optimisation.
+
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/opt4.png)
+
+For optimisation fo a hierarchical structure with multiple different modules,
+
+```
+module sub_module1(input a , input b , output y);
+ assign y = a & b;
+endmodule
+
+
+module sub_module2(input a , input b , output y);
+ assign y = a^b;
+endmodule
+
+
+module multiple_module_opt(input a , input b , input c , input d , output y);
+wire n1,n2,n3;
+
+sub_module1 U1 (.a(a) , .b(1'b1) , .y(n1));
+sub_module2 U2 (.a(n1), .b(1'b0) , .y(n2));
+sub_module2 U3 (.a(b), .b(d) , .y(n3));
+
+assign y = c | (b & n1); 
+
+
+endmodule
+```
+The above logic upon synthesis is infered as a 2 input AND gate as an input to a 2-input OR gate on optimisation.
+
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/opt5.png)
+
+For optimisation fo a hierarchical structure with multiple repeated modules,
+
+```
+module sub_module(input a , input b , output y);
+ assign y = a & b;
+endmodule
+
+
+
+module multiple_module_opt2(input a , input b , input c , input d , output y);
+wire n1,n2,n3;
+
+sub_module U1 (.a(a) , .b(1'b0) , .y(n1));
+sub_module U2 (.a(b), .b(c) , .y(n2));
+sub_module U3 (.a(n2), .b(d) , .y(n3));
+sub_module U4 (.a(n3), .b(n1) , .y(y));
+
+
+endmodule
+```
+The above logic upon synthesis is infered as a 2 input AND gate as a direct connection of ground (logic 0) on optimisation.
+
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/opt6.png)
+
+### Sequential Optimisations
+The sequential logic optimisations techniques can be broadly classified into two categories:
+* Basic Techniques: Sequential Constant Propagation
+* Advanced Techniques: State Optimisation, Retiming, Sequential Logic Cloning etc.
+
+
+**Examples of Sequential Constant Propagation**
+
+```
+module dff_const1(input clk, input reset, output reg q);
+always @(posedge clk, posedge reset)
+begin
+	if(reset)
+		q <= 1'b0;
+	else
+		q <= 1'b1;
+end
+
+endmodule
+```
+The above logic upon synthesis is infered as a D flip-flop with asynchronous reset on optimisation.
+
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/const1.png)
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/dot_const1.png)
+
+```
+module dff_const2(input clk, input reset, output reg q);
+always @(posedge clk, posedge reset)
+begin
+	if(reset)
+		q <= 1'b1;
+	else
+		q <= 1'b1;
+end
+
+endmodule
+```
+The above logic upon synthesis is infered as a direct connection of VDD (logic 1) on optimisation.
+
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/const2.png)
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/dot_const2.png)
+
+```
+module dff_const3(input clk, input reset, output reg q);
+reg q1;
+
+always @(posedge clk, posedge reset)
+begin
+	if(reset)
+	begin
+		q <= 1'b1;
+		q1 <= 1'b0;
+	end
+	else
+	begin
+		q1 <= 1'b1;
+		q <= q1;
+	end
+end
+
+endmodule
+```
+The above logic upon synthesis is infered as two D flip-flop with asynchronous set and reset on optimisation.
+
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/const3.png)
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/dot_const3.png)
+
+```
+module dff_const4(input clk, input reset, output reg q);
+reg q1;
+
+always @(posedge clk, posedge reset)
+begin
+	if(reset)
+	begin
+		q <= 1'b1;
+		q1 <= 1'b1;
+	end
+	else
+	begin
+		q1 <= 1'b1;
+		q <= q1;
+	end
+end
+
+endmodule
+```
+The above logic upon synthesis is infered as a direct connection of VDD (logic 1) on optimisation.
+
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/const4.png)
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/dot_const4.png)
+
+```
+module dff_const5(input clk, input reset, output reg q);
+reg q1;
+
+always @(posedge clk, posedge reset)
+begin
+	if(reset)
+	begin
+		q <= 1'b0;
+		q1 <= 1'b0;
+	end
+	else
+	begin
+		q1 <= 1'b1;
+		q <= q1;
+	end
+end
+
+endmodule
+```
+The above logic upon synthesis is infered as a two D flip-flop with asynchronous reset on optimisation.
+
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/const5.png)
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/dot_const5.png)
+
+Below examples show the optimisations of unused states.
+
+```
+module counter_opt (input clk , input reset , output q);
+reg [2:0] count;
+assign q = count[0];
+
+always @(posedge clk ,posedge reset)
+begin
+	if(reset)
+		count <= 3'b000;
+	else
+		count <= count + 1;
+end
+
+endmodule
+```
+The above logic upon synthesis is infered as a single D flip-flop instead of 3 flip-flops on optimisation.
+
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/copt1.png)
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/dot_copt1.png)
+
+```
+module counter_opt (input clk , input reset , output q);
+reg [2:0] count;
+assign q = (count[2:0] == 3'b100);
+
+always @(posedge clk ,posedge reset)
+begin
+	if(reset)
+		count <= 3'b000;
+	else
+		count <= count + 1;
+end
+
+endmodule
+```
+The above logic upon synthesis is infered as 3 flip-flops on optimisation.
+
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/copt2.png)
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/dot_copt2.png)
+
+## Day 4
 
 
 ## Contributors
