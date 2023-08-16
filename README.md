@@ -650,7 +650,29 @@ The waveforms before and after synthesis are as follows:
 The waveforms are different which means there is Synthesis-simulation mismatch.
 
 ## Day 5
+### If Case, For Loop and For Generate
+**If Case and Case Constructs**
+If is a conditional statement mainly used to create priority logic to execute particular pieces of code. Syntax for if-else loop is as shown below:
+```
+if (cond1) begin
+	...
+end
+else if (cond2) begin
+	...
+end
+else begin
+	...
+end
+```
+There is also a danger with using if-else conditions that if used with a bad coding style, it could be inferred as a latch. For example if the code below is synthesised, and if both the conditions evaluate to false, a hardware latch will be realised to retain the previous value and create the combinational loop.
+```
+if(cond1)
+	y=a;
+else if(cond2)
+	y=b;
+```
 
+Similar to if-else conditions, case statement is used to implement multi-way branching based on the value of an expression.
 
 ## Contributors
 * Aamod B K
