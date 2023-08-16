@@ -582,6 +582,74 @@ The above logic upon synthesis is infered as 3 flip-flops on optimisation.
 ![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/dot_copt2.png)
 
 ## Day 4
+### Gate Level Simulation and Synthesis-Simulation Mismatch
+As explained in previous sections, after following the steps to synthesis and obtaining the netlist, we can verify our netlist by perfoming Gate Level Simulation (GLS).
+Synthesis-simulation mismatch refers to the differences between the behavior of a digital circuit as simulated at the Register Transfer Level (RTL) and its behavior after being synthesized to gate-level netlists. This can happen due to these main reasons:
+* Missing Sensitivity List
+* Blocking vs Non-blocking assignments
+* Non standard verilog coding
+
+### Examples
+**ternary_mux**
+```
+module ternary_operator_mux (input i0 , input i1 , input sel , output y);
+	assign y = sel?i1:i0;
+endmodule
+```
+Netlist after synthesis:
+
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/dot_eg1.png)
+
+The waveforms before and after synthesis are as follows:
+
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/befaf1.png)
+
+The waveforms are same which means there is no Synthesis-simulation mismatch.
+
+**bad_mux**
+```
+module bad_mux (input i0 , input i1 , input sel , output reg y);
+always @ (sel)
+begin
+	if(sel)
+		y <= i1;
+	else 
+		y <= i0;
+end
+endmodule
+```
+Netlist after synthesis:
+
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/dot_eg2.png)
+
+The waveforms before and after synthesis are as follows:
+
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/befaf2.png)
+
+The waveforms are different which means there is Synthesis-simulation mismatch.
+
+**blocking_caveat**
+```
+module blocking_caveat (input a , input b , input  c, output reg d); 
+reg x;
+always @ (*)
+begin
+	d = x & c;
+	x = a | b;
+end
+endmodule
+```
+Netlist after synthesis:
+
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/dot_eg3.png)
+
+The waveforms before and after synthesis are as follows:
+
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/befaf3.png)
+
+The waveforms are different which means there is Synthesis-simulation mismatch.
+
+## Day 5
 
 
 ## Contributors
