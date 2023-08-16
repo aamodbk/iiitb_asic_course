@@ -655,13 +655,13 @@ The waveforms are different which means there is Synthesis-simulation mismatch.
 If is a conditional statement mainly used to create priority logic to execute particular pieces of code. Syntax for if-else loop is as shown below:
 ```
 if (cond1) begin
-	...
+	// ...
 end
 else if (cond2) begin
-	...
+	// ...
 end
 else begin
-	...
+	// ...
 end
 ```
 There is also a danger with using if-else conditions that if used with a bad coding style, it could be inferred as a latch. For example if the code below is synthesised, and if both the conditions evaluate to false, a hardware latch will be realised to retain the previous value and create the combinational loop.
@@ -672,7 +672,124 @@ else if(cond2)
 	y=b;
 ```
 
-Similar to if-else conditions, case statement is used to implement multi-way branching based on the value of an expression.
+Similar to if-else conditions, case statement is used to implement multi-way branching based on the value of an expression. The execution checks for all the case statements and whichever satisfies the statement, that particular statement is executed. If there is no match, the default statement is executed. Unlike if construct, the execution doesn't stop once statement is satisfied, but it continues further.
+Case statement is not priority based and it will infer a single multiplexer with 2^n inputs whereas if else statement is based on the priority and it will infer multiple 2:1 multiplexers.
+Syntax of the case statement is as mentioned below:
+```
+case (expression)
+    value_1: // Code to execute if expression matches value_1
+    value_2: // Code to execute if expression matches value_2
+    // ...
+    value_n: // Code to execute if expression matches value_n
+    default: // Code to execute if none of the values match
+endcase
+```
+Caveats in case statements occur due to these main reasons:
+* Incomplete Case Statements
+* Partial Assignments
+* Overlapping Case
+
+Below given examples are for some incomplete if statements.
+
+```
+module incomp_if (input i0 , input i1 , input i2 , output reg y);
+always @ (*)
+begin
+	if(i0)
+		y <= i1;
+end
+endmodule
+```
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/dot_incomp1.png)
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/incomp1.png)
+
+```
+module incomp_if2 (input i0 , input i1 , input i2 , input i3, output reg y);
+always @ (*)
+begin
+	if(i0)
+		y <= i1;
+	else if (i2)
+		y <= i3;
+
+end
+endmodule
+```
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/dot_incomp2.png)
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/incomp2.png)
+
+Below is an example for an incomplete case statement.
+```
+module incomp_case (input i0 , input i1 , input i2 , input [1:0] sel, output reg y);
+always @ (*)
+begin
+	case(sel)
+		2'b00 : y = i0;
+		2'b01 : y = i1;
+	endcase
+end
+endmodule
+```
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/dot_incompc.png)
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/incompc.png)
+
+Below is an example for a complete case statement.
+```
+module comp_case (input i0 , input i1 , input i2 , input [1:0] sel, output reg y);
+always @ (*)
+begin
+	case(sel)
+		2'b00 : y = i0;
+		2'b01 : y = i1;
+		default : y = i2;
+	endcase
+end
+endmodule
+```
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/dot_compc.png)
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/compc.png)
+
+Below is an example for a partial case assignment statement.
+```
+module partial_case_assign (input i0 , input i1 , input i2 , input [1:0] sel, output reg y , output reg x);
+always @ (*)
+begin
+	case(sel)
+		2'b00 : begin
+			y = i0;
+			x = i2;
+			end
+		2'b01 : y = i1;
+		default : begin
+		           x = i1;
+			   y = i2;
+			  end
+	endcase
+end
+endmodule
+```
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/dot_partc.png)
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/partc.png)
+
+Below is an example for a overlapping case assignment statement.
+```
+module bad_case (input i0 , input i1, input i2, input i3 , input [1:0] sel, output reg y);
+always @(*)
+begin
+	case(sel)
+		2'b00: y = i0;
+		2'b01: y = i1;
+		2'b10: y = i2;
+		2'b1?: y = i3;
+		//2'b11: y = i3;
+	endcase
+end
+
+endmodule
+```
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/dot_badc.png)
+![alt text](https://github.com/aamodbk/iiitb_asic_course/blob/main/badc.png)
+
 
 ## Contributors
 * Aamod B K
